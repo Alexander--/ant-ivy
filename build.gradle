@@ -1,0 +1,44 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+apply plugin: 'java'
+
+repositories {
+    jcenter()
+}
+
+configurations {
+    provided
+}
+ 
+sourceSets {
+    main {
+        compileClasspath += configurations.provided
+
+	java.srcDirs = ['src/java']
+
+	resources { srcDirs = ["src/java"]; exclude "**/*.java" }
+    }
+}
+
+sourceCompatibility = '1.6'
+targetCompatibility = '1.6'
+
+dependencies {
+    provided 'org.bouncycastle:bcprov-jdk14:1.45'
+    provided 'org.bouncycastle:bcpg-jdk14:1.45'
+
+    provided 'org.apache.ant:ant-nodeps:1.7.1'
+
+    provided 'commons-httpclient:commons-httpclient:3.0'
+    provided 'oro:oro:2.0.8'
+
+    provided 'com.jcraft:jsch:0.1.50'
+    provided 'com.jcraft:jsch.agentproxy:0.0.6'
+    provided 'com.jcraft:jsch.agentproxy.connector-factory:0.0.6'
+    provided 'com.jcraft:jsch.agentproxy.jsch:0.0.6'
+
+    provided 'commons-vfs:commons-vfs:1.0'
+}

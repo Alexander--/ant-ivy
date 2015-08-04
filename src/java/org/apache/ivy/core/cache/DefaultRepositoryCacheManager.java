@@ -515,6 +515,9 @@ public class DefaultRepositoryCacheManager implements RepositoryCacheManager, Iv
                     // second check: verify the hashcode of the cached artifact
                     if (m.group(4).equals("" + originArtifactId.hashCode())) {
                         try {
+                            if (location.charAt(0) == '/')
+                                location = "file:" + location;
+
                             artifact = new DefaultArtifact(originArtifactId,
                                     artifact.getPublicationDate(), new URL(location), true);
                         } catch (MalformedURLException e) {
@@ -555,6 +558,9 @@ public class DefaultRepositoryCacheManager implements RepositoryCacheManager, Iv
                                 // second check: verify the hashcode of the cached artifact
                                 if (m.group(4).equals("" + originArtifactId.hashCode())) {
                                     try {
+                                        if (location.charAt(0) == '/')
+                                            location = "file:" + location;
+
                                         artifact = new DefaultArtifact(originArtifactId,
                                                 artifact.getPublicationDate(), new URL(location),
                                                 true);

@@ -19,6 +19,8 @@ package org.apache.ivy.plugins.resolver;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -308,26 +310,49 @@ public class FileSystemResolver extends RepositoryResolver {
     @Override
     public void addConfiguredIvy(IvyPattern p) {
         File file = Checks.checkAbsolute(p.getPattern(), "ivy pattern");
-        p.setPattern(file.getAbsolutePath());
+        // poor man's file.toURL
+        String pattern = "file:" + slashify(file.getAbsolutePath(), file.isDirectory());
+        p.setPattern(pattern);
         super.addConfiguredIvy(p);
     }
 
     @Override
     public void addIvyPattern(String pattern) {
         File file = Checks.checkAbsolute(pattern, "ivy pattern");
-        super.addIvyPattern(file.getAbsolutePath());
+        try {
+            super.addIvyPattern(file.toURI().toURL().toString());
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Override
     public void addConfiguredArtifact(IvyPattern p) {
         File file = Checks.checkAbsolute(p.getPattern(), "artifact pattern");
-        p.setPattern(file.getAbsolutePath());
+        // poor man's file.toURL
+        String pattern = "file:" + slashify(file.getAbsolutePath(), file.isDirectory());
+        p.setPattern(pattern);
         super.addConfiguredArtifact(p);
     }
 
     @Override
     public void addArtifactPattern(String pattern) {
         File file = Checks.checkAbsolute(pattern, "artifact pattern");
-        super.addArtifactPattern(file.getAbsolutePath());
+        try {
+            super.addArtifactPattern(file.toURI().toURL().toString());
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private static String slashify(String path, boolean isDirectory) {
+        String p = path;
+        if (File.separatorChar != '/')
+            p = p.replace(File.separatorChar, '/');
+        if (!p.startsWith("/"))
+            p = "/" + p;
+        if (!p.endsWith("/") && isDirectory)
+            p = p + "/";
+        return p;
     }
 }

@@ -34,6 +34,8 @@ public final class IvyAuthenticator extends Authenticator {
 
     private static boolean securityWarningLogged = false;
 
+    private static boolean canGetAuthenticator = true;
+
     /**
      * Private c'tor to prevent instantiation.
      */
@@ -51,13 +53,17 @@ public final class IvyAuthenticator extends Authenticator {
         // obtain it. If that doesn't work, assume there is no original authenticator
         Authenticator original = null;
 
-        try {
-            Field f = Authenticator.class.getDeclaredField("theAuthenticator");
-            f.setAccessible(true);
-            original = (Authenticator) f.get(null);
-        } catch (Throwable t) {
-            Message.debug("Error occurred while getting the original authenticator: "
-                    + t.getMessage());
+        if (canGetAuthenticator) {
+            try {
+                Field f = Authenticator.class.getDeclaredField("theAuthenticator");
+                f.setAccessible(true);
+                original = (Authenticator) f.get(null);
+            } catch (Throwable t) {
+                canGetAuthenticator = false;
+
+                Message.debug("Error occurred while getting the original authenticator: "
+                        + t.getMessage());
+            }
         }
 
         if (!(original instanceof IvyAuthenticator)) {

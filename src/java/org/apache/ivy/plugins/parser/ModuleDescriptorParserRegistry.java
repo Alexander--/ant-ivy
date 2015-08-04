@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.ivy.osgi.core.OSGiManifestParser;
+import org.apache.ivy.plugins.parser.m2.BarebonePomParser;
 import org.apache.ivy.plugins.parser.m2.PomModuleDescriptorParser;
 import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorParser;
 import org.apache.ivy.plugins.repository.Resource;
@@ -42,9 +43,9 @@ public final class ModuleDescriptorParserRegistry extends AbstractModuleDescript
     private List<ModuleDescriptorParser> parsers = new LinkedList<ModuleDescriptorParser>();
 
     private ModuleDescriptorParserRegistry() {
-        parsers.add(PomModuleDescriptorParser.getInstance());
-        parsers.add(OSGiManifestParser.getInstance());
-        parsers.add(XmlModuleDescriptorParser.getInstance());
+        parsers.add(BarebonePomParser.getInstance());
+        //parsers.add(OSGiManifestParser.getInstance());
+        //parsers.add(XmlModuleDescriptorParser.getInstance());
     }
 
     /**

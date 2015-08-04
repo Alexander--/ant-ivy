@@ -19,6 +19,8 @@ package org.apache.ivy.plugins.repository.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,10 +114,16 @@ public class FileRepository extends AbstractRepository {
     }
 
     File getFile(String source) {
-        if (baseDir != null) {
-            return FileUtil.resolveFile(baseDir, source);
-        } else {
-            return Checks.checkAbsolute(source, "source");
+        try {
+            source = new URL(source).getFile();
+
+            if (baseDir != null) {
+                return FileUtil.resolveFile(baseDir, source);
+            } else {
+                return Checks.checkAbsolute(source, "source");
+            }
+        } catch (MalformedURLException e) {
+            throw new IllegalStateException(e);
         }
     }
 
